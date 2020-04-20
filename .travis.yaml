@@ -1,0 +1,10 @@
+language: generic
+services:
+  - docker
+before_install:
+  - docker build -t $DOCKERHUB_USERNAME/$PROJECT_NAME .
+after_success:
+  - if [ "$TRAVIS_TAG" ]; then
+    echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin;
+    docker tag $DOCKERHUB_USERNAME/$PROJECT_NAME $DOCKERHUB_USERNAME/$PROJECT_NAME:$TRAVIS_TAG;
+    docker push $DOCKERHUB_USERNAME/$PROJECT_NAME;
